@@ -56,3 +56,39 @@ window.addEventListener('DOMContentLoaded', function(){
     }
   }
 });
+
+// blyere-analytics.js
+(function() {
+  const GA_ID = "G-ZSYCEYR6HE";
+
+  function loadAnalytics() {
+    // Load Google Analytics library
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
+    script.onload = initGA;
+    document.head.appendChild(script);
+  }
+
+  function initGA() {
+    // Initialize Analytics
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    window.gtag = gtag;
+
+    gtag('js', new Date());
+    gtag('config', GA_ID, { 
+      page_path: window.location.pathname,
+      send_page_view: true 
+    });
+
+    // Optional: Track page changes on Blogger (if using AJAX navigation)
+    window.addEventListener('popstate', () => {
+      gtag('config', GA_ID, { page_path: window.location.pathname });
+    });
+  }
+
+  // Start loading after page fully loads
+  if (document.readyState === 'complete') loadAnalytics();
+  else window.addEventListener('load', loadAnalytics);
+})();
