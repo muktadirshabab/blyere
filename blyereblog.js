@@ -15,3 +15,42 @@ document.getElementById("menuToggle").addEventListener("click",function(){const 
   const script = document.createElement('script');
   script.src = "https://blyere.blogspot.com/feeds/posts/default?alt=json-in-script&max-results=10&callback=displayPosts";
   document.body.appendChild(script);
+
+
+function openNewsletter() {
+  document.getElementById("newsletter-popup").style.display = "flex";
+}
+function closeNewsletter() {
+  document.getElementById("newsletter-popup").style.display = "none";
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  setTimeout(openNewsletter, 1200); // Show pop-up after 1.2s
+
+  document.getElementById('newsletterForm').onsubmit = function(e) {
+    e.preventDefault();
+    var name = document.getElementById('name').value.trim();
+    var email = document.getElementById('email').value.trim();
+    var msgBox = document.getElementById('resultMsg');
+    // Basic validation
+    if (!name || !email) {
+      msgBox.textContent = "Both fields are required!";
+      return;
+    }
+    // Google Apps Script endpoint for form submission
+    var scriptURL = 'https://script.google.com/macros/s/AKfycbxdSh50o5oghv4u-5-snLMsr6bxFFigd65pzAKSVO-Q-_jdrUWm5Pw6uqrUZX8l7SIU/exec';
+    fetch(scriptURL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type':'application/x-www-form-urlencoded'},
+      body: `name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}`
+    }).then(() => {
+      msgBox.style.color = "#128c1f";
+      msgBox.textContent = "Thank you for subscribing!";
+      document.getElementById('newsletterForm').reset();
+      setTimeout(closeNewsletter, 1400);
+    }).catch(() => {
+      msgBox.textContent = "Failed to subscribe. Please try again.";
+    });
+  };
+});
